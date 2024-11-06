@@ -19,7 +19,7 @@ class CheckList extends Model
 
     public function config()
     {
-        return $this->belongsTo(ListConfig::class, 'config_id', 'id');
+        return $this->belongsTo(ListConfig::class);
     }
 
     public function operator()

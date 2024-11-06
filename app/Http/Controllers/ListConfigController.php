@@ -165,29 +165,32 @@ class ListConfigController extends Controller
             'prepare_id'=> 'required|numeric',
         ]);
         try {
-            $config = ListConfig::create($dataValidated);
-            $type = Type::findOrFail($config->prepare);
+            $type = Type::findOrFail($request->prepare);
             switch ($type->name) {
                 case 'Channel':
-                    $resp = Channels::FindOrFail($config->prepare_id);
-                    $urls = [];
+                    $resp = Channels::FindOrFail($request->prepare_id);
                     foreach ($resp->config as $url) {
-                        $urls[] = $url->url;
+                        $list = ListConfig::whereConfig($url->url)->first();
+                        if (!empty($list)) {
+                            continue;
+                        }
+                        $config = ListConfig::create(array_merge($dataValidated, ['config' => $url->url]));
                     }
-                    $resp = $urls;
                     break;
                 case 'Link':
-                    $resp = LinkSub::FindOrFail($config->prepare_id);
+                    $resp = LinkSub::FindOrFail($request->prepare_id);
+                    $config = ListConfig::create(array_merge($dataValidated, ['config' => $resp->link]));
                     break;
                 case 'GET':
-                    $resp = WebServiceGet::FindOrFail($config->prepare_id);
+                    $resp = WebServiceGet::FindOrFail($request->prepare_id);
+                    $config = ListConfig::create(array_merge($dataValidated, ['config' => $resp->link]));
                     break;
                 case 'POST':
-                    $resp = WebServicePost::FindOrFail($config->prepare_id);
+                    $resp = WebServicePost::FindOrFail($request->prepare_id);
+                    $config = ListConfig::create(array_merge($dataValidated, ['config' => $resp->link]));
                     break;
             }
-            $config->update(['config' => $resp->link ?? $resp]);
-            return $this->success($config);
+            return $this->success('success');
         } catch (Exception $e) {
             Log::error($e->getMessage());
         }
@@ -287,35 +290,33 @@ class ListConfigController extends Controller
         ]);
         try {
             $config = ListConfig::findOrFail($id);
-            $type = Type::findOrFail($config->prepare);
+            $type = Type::findOrFail($request->prepare);
             switch ($type->name) {
                 case 'Channel':
-                    $resp = Channels::FindOrFail($config->prepare_id);
-                    $urls = [];
+                    $resp = Channels::FindOrFail($request->prepare_id);
                     foreach ($resp->config as $url) {
-                        $urls[] = $url->url;
+                        $list = ListConfig::whereConfig($url->url)->first();
+                        if (!empty($list)) {
+                            continue;
+                        }
+                        $config->update(array_merge($dataValidated, ['config' => $url->url]));
                     }
-                    $resp = $urls;
                     break;
                 case 'Link':
-                    $resp = LinkSub::FindOrFail($config->prepare_id);
+                    $resp = LinkSub::FindOrFail($request->prepare_id);
+                    $config->update(array_merge($dataValidated, ['config' => $resp->link]));
                     break;
                 case 'GET':
-                    $resp = WebServiceGet::FindOrFail($config->prepare_id);
+                    $resp = WebServiceGet::FindOrFail($request->prepare_id);
+                    $config->update(array_merge($dataValidated, ['config' => $resp->link]));
                     break;
                 case 'POST':
-                    $resp = WebServicePost::FindOrFail($config->prepare_id);
+                    $resp = WebServicePost::FindOrFail($request->prepare_id);
+                    $config->update(array_merge($dataValidated, ['config' => $resp->link]));
                     break;
             }
-            $config->update([
-                'type_id'    => $dataValidated['type_id'],
-                'prepare'    => $dataValidated['prepare'],
-                'prepare_id' => $dataValidated['prepare_id'],
-                'config'     => $resp->link ?? $resp
-            ]);
             return $this->success([
                 'edited'=> true,
-                $config
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());

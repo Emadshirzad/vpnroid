@@ -667,6 +667,349 @@
                 ]
             }
         },
+        "/check": {
+            "get": {
+                "tags": [
+                    "CheckList"
+                ],
+                "summary": "check list all types",
+                "description": "check list all Item ( you must be admin)",
+                "operationId": "7ff52b90b9e05b04eaa6fe69a07c4ef5",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "default": "1"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "description": "Current page number",
+                                            "type": "integer",
+                                            "format": "int32"
+                                        },
+                                        "data": {
+                                            "description": "List of item",
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ConfigModel"
+                                            }
+                                        },
+                                        "first_page_url": {
+                                            "description": "First page URL",
+                                            "type": "string",
+                                            "format": "uri"
+                                        },
+                                        "from": {
+                                            "description": "First item number in the current page",
+                                            "type": "integer",
+                                            "format": "int32"
+                                        },
+                                        "last_page": {
+                                            "description": "Last page number",
+                                            "type": "integer",
+                                            "format": "int32"
+                                        },
+                                        "links": {
+                                            "description": "Links",
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "#/components/schemas/Previous"
+                                                    },
+                                                    {
+                                                        "$ref": "#/components/schemas/Links"
+                                                    },
+                                                    {
+                                                        "$ref": "#/components/schemas/Next"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "last_page_url": {
+                                            "description": "Last page URL",
+                                            "type": "string",
+                                            "format": "uri"
+                                        },
+                                        "next_page_url": {
+                                            "description": "Next page URL",
+                                            "type": "string",
+                                            "format": "uri"
+                                        },
+                                        "path": {
+                                            "description": "Path",
+                                            "type": "string"
+                                        },
+                                        "per_page": {
+                                            "description": "Items per page",
+                                            "type": "integer",
+                                            "format": "int32"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an \"unexpected\" error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "CheckList"
+                ],
+                "summary": "MakeOneItem",
+                "description": "make one Item",
+                "operationId": "7a99946df372e8b7745257e103ca35e8",
+                "requestBody": {
+                    "description": "tasks input",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "config_id": {
+                                        "description": "config id",
+                                        "type": "integer"
+                                    },
+                                    "operator_id": {
+                                        "description": "operator id",
+                                        "type": "integer"
+                                    },
+                                    "healthy": {
+                                        "description": "healthy config",
+                                        "type": "integer"
+                                    },
+                                    "down": {
+                                        "description": "down config",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessModel"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an 'unexpected' error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/check/{id}": {
+            "get": {
+                "tags": [
+                    "CheckList"
+                ],
+                "summary": "getOneItem",
+                "description": "get One Item",
+                "operationId": "18a95bf6b5b4ad5ea4b4a213d4fe78eb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessModel"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an \"unexpected\" error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "CheckList"
+                ],
+                "summary": "EditOneItem",
+                "description": "edit one Item",
+                "operationId": "2548aad01b2e3a7c36b0c69b35ff81e0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "tasks input",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "config_id": {
+                                        "description": "config id",
+                                        "type": "integer"
+                                    },
+                                    "operator_id": {
+                                        "description": "operator id",
+                                        "type": "integer"
+                                    },
+                                    "healthy": {
+                                        "description": "healthy config",
+                                        "type": "integer"
+                                    },
+                                    "down": {
+                                        "description": "down config",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessModel"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an 'unexpected' error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "CheckList"
+                ],
+                "summary": "DeleteOneItem",
+                "description": "Delete one Item",
+                "operationId": "d2b2adfff174af9c0829ebbe5c9a7271",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessModel"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an 'unexpected' error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
         "/config": {
             "get": {
                 "tags": [
@@ -772,7 +1115,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
             }
         },
         "/config/tel": {
@@ -4282,6 +4630,10 @@
         {
             "name": "Channels",
             "description": "Channels"
+        },
+        {
+            "name": "CheckList",
+            "description": "CheckList"
         },
         {
             "name": "Configs",

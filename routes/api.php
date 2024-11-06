@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChannelsController;
+use App\Http\Controllers\CheckListController;
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\EnvoyController;
 use App\Http\Controllers\ExampleController;
@@ -142,6 +143,16 @@ Route::group([
     Route::apiResource('list-config', ListConfigController::class, [
         'parameters'=> [
             'list-config'=> 'id'
+        ]
+    ]);
+});
+
+Route::group([
+    'middleware' => ['admin']
+], function () {
+    Route::apiResource('check', CheckListController::class, [
+        'parameters'=> [
+            'check'=> 'id'
         ]
     ]);
 });

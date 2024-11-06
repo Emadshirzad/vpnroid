@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Channels;
 use App\Models\Config;
+use App\Models\Service;
 use danog\MadelineProto\API;
 use danog\MadelineProto\Settings;
 use danog\MadelineProto\Settings\AppInfo;
@@ -108,7 +109,7 @@ class ConfigController extends Controller
      *         response=400,
      *         description="an ""unexpected"" error",
      *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     )
+     *     ),security={{"api_key": {}}}
      * )
      * Display the specified resource.
      */
@@ -248,17 +249,18 @@ class ConfigController extends Controller
                     return $channel;
                 }
             });
+            $service = Service::whereTypeId(2)->first(); // id 2 == channel
             foreach ($channels as $channel) {
                 try {
                     Channels::create([
                         'link'       => $channel,
-                        'service_id' => 1, //FIXME: set default channel type
+                        'service_id' => $service->id,
                     ]);
                 } catch (\Throwable $th) {
                     Log::error($th->getMessage());
                 }
             }
-            return ['message' => 'channels saved successfully'];
+            return ['message' => 'joined and saved channels successfully'];
         } catch (Exception $e) {
             Log::error($e->getMessage());
         }
