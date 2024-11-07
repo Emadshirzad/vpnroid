@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 * @OA\Info(
 *     title="Admin OpenApi",
 *     version="1.0.0",
-*     description="this is a api documentation",
+*     description="this is a api documentation ( you must be admin for use method PUT/DELETE )",
 *     @OA\Contact(
 *         name="Emad shirzad",
 *         email="shemad2022@gmail.com"

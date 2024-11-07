@@ -6,19 +6,11 @@ use App\Models\Envoy;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class EnvoyController extends Controller
 {
-    public static function middleware(): array
-    {
-        return [
-            new Middleware('envoy', only:['show']),
-        ];
-    }
-
     /**
      * @OA\Post(
      *     path="/auth/envoy/register-user",

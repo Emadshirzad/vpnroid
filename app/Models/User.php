@@ -138,8 +138,8 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(Envoy::class);
     }
 
-    public function userConfigs()
+    public function userConfig()
     {
-        return $this->hasMany(UserConfig::class);
+        return $this->hasMany(userConfig::class);
     }
 }

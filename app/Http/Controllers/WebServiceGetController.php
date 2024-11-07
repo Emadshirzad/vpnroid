@@ -5,10 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\WebServiceGet;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
 
-class WebServiceGetController extends Controller
+class WebServiceGetController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('admin', only: ['update', 'destroy']),
+        ];
+    }
+
     /**
      * @OA\Get(
      *     path="/webService/get",

@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Admin OpenApi",
-        "description": "this is a api documentation",
+        "description": "this is a api documentation (you must be admin for use method PUT/DELETE)",
         "contact": {
             "name": "Emad shirzad",
             "email": "shemad2022@gmail.com"
@@ -19,6 +19,360 @@
         }
     ],
     "paths": {
+        "/admin/users": {
+            "get": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "list all users",
+                "description": "list all Item",
+                "operationId": "2514208f8a5dacd40d3bfe84149527ff",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "default": "1"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "description": "Current page number",
+                                            "type": "integer",
+                                            "format": "int32"
+                                        },
+                                        "data": {
+                                            "description": "List of item",
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserModel"
+                                            }
+                                        },
+                                        "first_page_url": {
+                                            "description": "First page URL",
+                                            "type": "string",
+                                            "format": "uri"
+                                        },
+                                        "from": {
+                                            "description": "First item number in the current page",
+                                            "type": "integer",
+                                            "format": "int32"
+                                        },
+                                        "last_page": {
+                                            "description": "Last page number",
+                                            "type": "integer",
+                                            "format": "int32"
+                                        },
+                                        "links": {
+                                            "description": "Links",
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "#/components/schemas/Previous"
+                                                    },
+                                                    {
+                                                        "$ref": "#/components/schemas/Links"
+                                                    },
+                                                    {
+                                                        "$ref": "#/components/schemas/Next"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "last_page_url": {
+                                            "description": "Last page URL",
+                                            "type": "string",
+                                            "format": "uri"
+                                        },
+                                        "next_page_url": {
+                                            "description": "Next page URL",
+                                            "type": "string",
+                                            "format": "uri"
+                                        },
+                                        "path": {
+                                            "description": "Path",
+                                            "type": "string"
+                                        },
+                                        "per_page": {
+                                            "description": "Items per page",
+                                            "type": "integer",
+                                            "format": "int32"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an \"unexpected\" error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/admin/users/ban/{id}": {
+            "put": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "EditOneItem",
+                "description": "edit one Item",
+                "operationId": "0c20ac5a833a15e8da5c0d42daa8f9db",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "tasks input",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "is_ban": {
+                                        "description": "is_ban",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserModel"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an 'unexpected' error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/admin/users/{id}": {
+            "get": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "getOneItem",
+                "description": "get One Item",
+                "operationId": "bbdf66e2d6fc02c916320b02e38b33f5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserModel"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an \"unexpected\" error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "EditOneItem",
+                "description": "edit one Item",
+                "operationId": "39dd30690bb78b4b21f78673109fea60",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "tasks input",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "description": "username",
+                                        "type": "string",
+                                        "example": "Item username"
+                                    },
+                                    "subscription_duration": {
+                                        "description": "subscription_duration",
+                                        "type": "integer",
+                                        "default": "null",
+                                        "example": 1
+                                    },
+                                    "phone": {
+                                        "description": "phone",
+                                        "type": "string",
+                                        "example": 9000000000
+                                    },
+                                    "address": {
+                                        "description": "address",
+                                        "type": "string",
+                                        "example": "Item address"
+                                    },
+                                    "balance": {
+                                        "description": "user balance",
+                                        "type": "integer",
+                                        "example": 0
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserModel"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an 'unexpected' error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "DeleteOneItem",
+                "description": "Delete one Item",
+                "operationId": "79c211c57fdd212d3e2ecb37e31c0479",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessModel"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an 'unexpected' error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
         "/auth/user/register": {
             "post": {
                 "tags": [
@@ -1297,38 +1651,6 @@
                         "api_key": []
                     }
                 ]
-            }
-        },
-        "/test": {
-            "get": {
-                "tags": [
-                    "Test"
-                ],
-                "summary": "my info",
-                "description": "my info",
-                "operationId": "45497c27b5215b44cb7b0f48317fd626",
-                "responses": {
-                    "200": {
-                        "description": "Success Message",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/SuccessModel"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "an 'unexpected' error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorModel"
-                                }
-                            }
-                        }
-                    }
-                }
             }
         },
         "/sub": {
@@ -4387,6 +4709,38 @@
                     }
                 ]
             }
+        },
+        "/test": {
+            "get": {
+                "tags": [
+                    "Test"
+                ],
+                "summary": "my info",
+                "description": "my info",
+                "operationId": "9c3f05466e04756ca3f67486f90504af",
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessModel"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an 'unexpected' error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -4624,6 +4978,10 @@
     },
     "tags": [
         {
+            "name": "AdminUsers",
+            "description": "AdminUsers"
+        },
+        {
             "name": "Authentication",
             "description": "Authentication"
         },
@@ -4642,10 +5000,6 @@
         {
             "name": "Envoy",
             "description": "Envoy"
-        },
-        {
-            "name": "Test",
-            "description": "Test"
         },
         {
             "name": "LinkSub",
@@ -4682,6 +5036,10 @@
         {
             "name": "WebServicesPost",
             "description": "WebServicesPost"
+        },
+        {
+            "name": "Test",
+            "description": "Test"
         }
     ]
 }

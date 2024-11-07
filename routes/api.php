@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChannelsController;
 use App\Http\Controllers\CheckListController;
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\EnvoyController;
-use App\Http\Controllers\ExampleController;
 use App\Http\Controllers\LinkSubController;
 use App\Http\Controllers\ListConfigController;
 use App\Http\Controllers\OperatorController;
@@ -15,9 +15,10 @@ use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserConfigController;
 use App\Http\Controllers\WebServiceGetController;
 use App\Http\Controllers\WebServicePostController;
+use App\Http\Controllers\ZExampleController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/test', [ExampleController::class, 'test']);
+Route::get('/test', [ZExampleController::class,  'test']);
 
 Route::group([
     'prefix' => 'auth'
@@ -31,7 +32,7 @@ Route::group([
         Route::post('role/{id}', [AuthController::class, 'changeRole']);
     });
 
-    Route::group(['prefix' => 'envoy'], function () {
+    Route::group(['prefix' => 'envoy', 'middleware' => ['envoy']], function () {
         Route::post('register-user', [EnvoyController::class, 'registerUser']);
         Route::get('envoy-users', [EnvoyController::class, 'show']);
     });
@@ -39,7 +40,7 @@ Route::group([
 
 Route::group([
     'prefix'     => 'config',
-    'middleware' => ['envoy']
+    'middleware' => ['admin']
 ], function () {
     Route::get('/', [ConfigController::class, 'index']);
     Route::get('/tel', [ConfigController::class, 'getConfigFromTel']);
@@ -57,7 +58,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['envoy']
+    'middleware' => ['admin']
 ], function () {
     Route::apiResource('service', ServiceController::class, [
         'parameters'=> [
@@ -67,7 +68,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['envoy']
+    'middleware' => ['admin']
 ], function () {
     Route::apiResource('type', TypeController::class, [
         'parameters'=> [
@@ -77,7 +78,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['envoy']
+    'middleware' => ['admin']
 ], function () {
     Route::apiResource('type-config', TypeConfigController::class, [
         'parameters'=> [
@@ -155,4 +156,17 @@ Route::group([
             'check'=> 'id'
         ]
     ]);
+});
+
+Route::group([
+    'middleware' => ['admin'],
+    'prefix'     => 'admin'
+], function () {
+    Route::group(['prefix' => 'users'], function () {
+        Route::get('/', [AdminUsersController::class, 'index']);
+        Route::get('/{id}', [AdminUsersController::class, 'show']);
+        Route::put('/ban/{id}', [AdminUsersController::class, 'ban']);
+        Route::put('/{id}', [AdminUsersController::class, 'update']);
+        Route::delete('/{id}', [AdminUsersController::class, 'destroy']);
+    });
 });

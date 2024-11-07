@@ -5,11 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\LinkSub;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
 
-class LinkSubController extends Controller
+class LinkSubController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('admin', only: ['update', 'destroy']),
+        ];
+    }
+
     /**
       * @OA\Get(
       *     path="/sub",

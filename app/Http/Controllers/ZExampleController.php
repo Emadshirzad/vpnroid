@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-class ExampleController extends Controller
+class ZExampleController extends Controller
 {
     /**
     * @OA\Get(

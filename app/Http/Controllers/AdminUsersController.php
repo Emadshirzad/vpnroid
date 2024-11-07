@@ -2,27 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\WebServicePost;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
 
-class WebServicePostController extends Controller implements HasMiddleware
+class AdminUsersController extends Controller
 {
-    public static function middleware(): array
-    {
-        return [
-            new Middleware('admin', only: ['update', 'destroy']),
-        ];
-    }
-
     /**
      * @OA\Get(
-     *     path="/webService/post",
-     *     tags={"WebServicesPost"},
-     *     summary="list all get",
+     *     path="/admin/users",
+     *     tags={"AdminUsers"},
+     *     summary="list all users",
      *     description="list all Item",
      *     @OA\Parameter(
      *         name="page",
@@ -46,7 +37,7 @@ class WebServicePostController extends Controller implements HasMiddleware
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
-     *                 @OA\Items(ref="#/components/schemas/ConfigModel"),
+     *                 @OA\Items(ref="#/components/schemas/UserModel"),
      *                 description="List of item"
      *             ),
      *             @OA\Property(
@@ -115,133 +106,16 @@ class WebServicePostController extends Controller implements HasMiddleware
     public function index()
     {
         try {
-            return $this->success(WebServicePost::paginate(10));
+            return $this->success(User::paginate(10));
         } catch (\Throwable $th) {
             return $this->error($th->getMessage());
         }
     }
 
     /**
-     * @OA\Post(
-     *     path="/webService/post",
-     *     tags={"WebServicesPost"},
-     *     summary="MakeOneItem",
-     *     description="make one Item",
-     *     @OA\RequestBody(
-     *         description="tasks input",
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="link",
-     *                 type="string",
-     *                 description="title",
-     *                 example="Item link"
-     *             ),
-     *             @OA\Property(
-     *                 property="body",
-     *                 type="string",
-     *                 description="body",
-     *                 example="Item body"
-     *             ),
-     *             @OA\Property(
-     *                 property="key",
-     *                 type="string",
-     *                 description="key",
-     *                 example="Item key"
-     *             ),
-     *             @OA\Property(
-     *                 property="header",
-     *                 type="string",
-     *                 description="header",
-     *                 example="Item header"
-     *             ),
-     *             @OA\Property(
-     *                 property="is_encode",
-     *                 type="boolean",
-     *                 description="is_encode",
-     *                 example=false,
-     *             ),
-     *             @OA\Property(
-     *                 property="service_id",
-     *                 type="integer",
-     *                 description="service_id",
-     *                 example=0,
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an 'unexpected' error",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     ),security={{"api_key": {}}}
-     * )
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $dataValidated = $request->validate([
-            'link'      => 'required',
-            'body'      => 'required',
-            'key'       => 'required',
-            'header'    => 'required',
-            'is_encode' => 'required|boolean',
-            'service_id'=> 'required|integer',
-        ]);
-        try {
-            $link = WebServicePost::create($dataValidated);
-            return $this->success($link);
-        } catch (Exception $th) {
-            return $this->error($th->getMessage());
-        }
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/webService/post/{id}",
-     *     tags={"WebServicesPost"},
-     *     summary="getOneItem",
-     *     description="get One Item",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an ""unexpected"" error",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     ),security={{"api_key": {}}}
-     * )
-     * Display the specified resource.
-     */
-    public function show(int $id)
-    {
-        try {
-            $webPost = WebServicePost::with('service')->find($id);
-            return $this->success($webPost);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return $this->error('Invalid id');
-        }
-    }
-
-    /**
      * @OA\Put(
-     *     path="/webService/post/{id}",
-     *     tags={"WebServicesPost"},
+     *     path="/admin/users/ban/{id}",
+     *     tags={"AdminUsers"},
      *     summary="EditOneItem",
      *     description="edit one Item",
      *     @OA\Parameter(
@@ -257,47 +131,137 @@ class WebServicePostController extends Controller implements HasMiddleware
      *         required=true,
      *         @OA\JsonContent(
      *             @OA\Property(
-     *                 property="link",
-     *                 type="string",
-     *                 description="title",
-     *                 example="Item link"
-     *             ),
-     *             @OA\Property(
-     *                 property="body",
-     *                 type="string",
-     *                 description="body",
-     *                 example="Item body"
-     *             ),
-     *             @OA\Property(
-     *                 property="key",
-     *                 type="string",
-     *                 description="key",
-     *                 example="Item key"
-     *             ),
-     *             @OA\Property(
-     *                 property="header",
-     *                 type="string",
-     *                 description="header",
-     *                 example="Item header"
-     *             ),
-     *             @OA\Property(
-     *                 property="is_encode",
+     *                 property="is_ban",
      *                 type="boolean",
-     *                 description="is_encode",
-     *                 example=false,
+     *                 description="is_ban",
+     *                 example=true
      *             ),
-     *             @OA\Property(
-     *                 property="service_id",
-     *                 type="integer",
-     *                 description="service_id",
-     *                 example=0,
-     *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
+     *         @OA\JsonContent(ref="#/components/schemas/UserModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an 'unexpected' error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * Update the specified resource in storage.
+     */
+    public function ban(int $id, Request $request)
+    {
+        $request->validate([
+            'is_ban' => 'required|boolean'
+        ]);
+        try {
+            $user = User::findOrFail($id);
+            $user->is_ban = $request->is_ban;
+            $user->save();
+            return $this->success([
+                'message' => 'ban user successfully',
+                'user'    => $user
+            ]);
+        } catch (\Throwable $th) {
+            return $this->error('ban error', [$th->getMessage()]);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/admin/users/{id}",
+     *     tags={"AdminUsers"},
+     *     summary="getOneItem",
+     *     description="get One Item",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/UserModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an ""unexpected"" error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * Display the specified resource.
+     */
+    public function show(int $id)
+    {
+        try {
+            $user = User::with('userConfig')->find($id);
+            return $this->success($user);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('Invalid id');
+        }
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/admin/users/{id}",
+     *     tags={"AdminUsers"},
+     *     summary="EditOneItem",
+     *     description="edit one Item",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         description="tasks input",
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="username",
+     *                 type="string",
+     *                 description="username",
+     *                 example="Item username"
+     *             ),
+     *             @OA\Property(
+     *                 property="subscription_duration",
+     *                 type="integer",
+     *                 description="subscription_duration",
+     *                 default="null",
+     *                 example=1,
+     *             ),
+     *             @OA\Property(
+     *                 property="phone",
+     *                 type="string",
+     *                 description="phone",
+     *                 example=09000000000,
+     *             ),
+     *             @OA\Property(
+     *                 property="address",
+     *                 type="string",
+     *                 description="address",
+     *                 example="Item address",
+     *             ),
+     *             @OA\Property(
+     *                 property="balance",
+     *                 type="integer",
+     *                 description="user balance",
+     *                 example=0,
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/UserModel"),
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -310,18 +274,18 @@ class WebServicePostController extends Controller implements HasMiddleware
     public function update(Request $request, int $id)
     {
         $dataValidated = $request->validate([
-            'link'      => 'required',
-            'body'      => 'required',
-            'key'       => 'required',
-            'header'    => 'required',
-            'is_encode' => 'required|boolean',
+            'username'              => 'nullable|min:6|string',
+            'subscription_duration' => 'nullable|numeric',
+            'phone'                 => 'nullable|digits:11',
+            'address'               => 'nullable|string',
+            'balance'               => 'nullable|numeric',
         ]);
         try {
-            $webPost = WebServicePost::findOrFail($id);
-            $webPost->update($dataValidated);
+            $user = User::findOrFail($id);
+            $user->update($dataValidated);
             return $this->success([
                 'edited'=> true,
-                $webPost
+                $user
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -330,8 +294,8 @@ class WebServicePostController extends Controller implements HasMiddleware
 
     /**
      * @OA\Delete(
-     *     path="/webService/post/{id}",
-     *     tags={"WebServicesPost"},
+     *     path="/admin/users/{id}",
+     *     tags={"AdminUsers"},
      *     summary="DeleteOneItem",
      *     description="Delete one Item",
      *     @OA\Parameter(
@@ -358,11 +322,11 @@ class WebServicePostController extends Controller implements HasMiddleware
     public function destroy(int $id)
     {
         try {
-            $webPost = WebServicePost::findOrFail($id);
-            $webPost->delete();
+            $user = User::findOrFail($id);
+            $user->delete();
             return $this->success([
                 'deleted'=> true,
-                $webPost
+                $user
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
