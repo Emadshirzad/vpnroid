@@ -29,18 +29,20 @@ Route::group([
         Route::post('register', [AuthController::class, 'register']);
         Route::get('refresh', [AuthController::class, 'refresh']);
         Route::get('me', [AuthController::class, 'me']);
+        Route::get('config', [AuthController::class, 'config']);
         Route::post('role/{id}', [AuthController::class, 'changeRole']);
     });
 
     Route::group(['prefix' => 'envoy', 'middleware' => ['envoy']], function () {
         Route::post('register-user', [EnvoyController::class, 'registerUser']);
         Route::get('envoy-users', [EnvoyController::class, 'show']);
+        Route::put('ban/{id}', [EnvoyController::class, 'ban']);
     });
 });
 
 Route::group([
     'prefix'     => 'config',
-    'middleware' => ['admin']
+    'middleware' => ['admin', 'auth']
 ], function () {
     Route::get('/', [ConfigController::class, 'index']);
     Route::get('/tel', [ConfigController::class, 'getConfigFromTel']);
@@ -48,7 +50,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['envoy']
+    'middleware' => ['envoy', 'auth']
 ], function () {
     Route::apiResource('sub', LinkSubController::class, [
         'parameters'=> [
@@ -58,7 +60,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['admin']
+    'middleware' => ['admin', 'auth']
 ], function () {
     Route::apiResource('service', ServiceController::class, [
         'parameters'=> [
@@ -68,7 +70,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['admin']
+    'middleware' => ['admin', 'auth']
 ], function () {
     Route::apiResource('type', TypeController::class, [
         'parameters'=> [
@@ -78,7 +80,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['admin']
+    'middleware' => ['admin', 'auth']
 ], function () {
     Route::apiResource('type-config', TypeConfigController::class, [
         'parameters'=> [
@@ -88,7 +90,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['envoy']
+    'middleware' => ['envoy', 'auth']
 ], function () {
     Route::apiResource('channel', ChannelsController::class, [
         'parameters'=> [
@@ -99,7 +101,7 @@ Route::group([
 
 Route::group([
     'prefix'     => 'webService',
-    'middleware' => ['envoy']
+    'middleware' => ['envoy', 'auth']
 ], function () {
     Route::group([], function () {
         Route::apiResource('get', WebServiceGetController::class, [
@@ -119,7 +121,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['envoy']
+    'middleware' => ['envoy', 'auth']
 ], function () {
     Route::apiResource('operator', OperatorController::class, [
         'parameters'=> [
@@ -129,7 +131,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['envoy']
+    'middleware' => ['envoy', 'auth']
 ], function () {
     Route::apiResource('user-config', UserConfigController::class, [
         'parameters'=> [
@@ -139,7 +141,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['envoy']
+    'middleware' => ['envoy', 'auth']
 ], function () {
     Route::apiResource('list-config', ListConfigController::class, [
         'parameters'=> [
@@ -149,7 +151,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['admin']
+    'middleware' => ['admin', 'auth']
 ], function () {
     Route::apiResource('check', CheckListController::class, [
         'parameters'=> [
@@ -159,13 +161,14 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['admin'],
+    'middleware' => ['admin', 'auth'],
     'prefix'     => 'admin'
 ], function () {
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', [AdminUsersController::class, 'index']);
         Route::get('/{id}', [AdminUsersController::class, 'show']);
         Route::put('/ban/{id}', [AdminUsersController::class, 'ban']);
+        Route::put('/unban/{id}', [AdminUsersController::class, 'unban']);
         Route::put('/{id}', [AdminUsersController::class, 'update']);
         Route::delete('/{id}', [AdminUsersController::class, 'destroy']);
     });

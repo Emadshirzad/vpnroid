@@ -110,4 +110,54 @@ class EnvoyController extends Controller
             return $this->error($th->getMessage());
         }
     }
+
+    /**
+     * @OA\Put(
+     *     path="/auth/envoy/ban/{id}",
+     *     tags={"Envoy"},
+     *     summary="BanOrUnBanUser",
+     *     description="Ban Or UnBan User",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/UserModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an 'unexpected' error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * Update the specified resource in storage.
+     */
+    public function ban(int $id)
+    {
+        try {
+            $token = Auth::user();
+            $user = User::whereEnvoyId($token->id)->get()->find($id);
+            if ($user) {
+                $user->is_ban = !$user->is_ban;
+                $user->save();
+                $message = $user->is_ban ? 'ban user successfully' : 'unban user successfully';
+                return $this->success([
+                    'message' => $message,
+                    'user'    => $user
+                ]);
+            }
+            return $this->success([
+                'message' => 'user not found',
+                // 'user'    => $user
+            ]);
+        } catch (\Throwable $th) {
+            return $this->error('ban error', [$th->getMessage()]);
+        }
+    }
 }

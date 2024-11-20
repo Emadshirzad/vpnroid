@@ -202,6 +202,10 @@ class UserConfigController extends Controller implements HasMiddleware
             ]);
             /** @var User */
             $envoy = Auth::user();
+            if ($envoy->balance < $resp->service->price) {
+                userConfig::whereId($UserConfig->id)->delete();
+                return $this->error('Insufficient inventory');
+            }
             $amount = $envoy->balance - $resp->service->price;
             $envoy->update(['balance' => $amount]);
             return $this->success($UserConfig);

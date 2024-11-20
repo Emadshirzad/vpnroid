@@ -116,26 +116,14 @@ class AdminUsersController extends Controller
      * @OA\Put(
      *     path="/admin/users/ban/{id}",
      *     tags={"AdminUsers"},
-     *     summary="EditOneItem",
-     *     description="edit one Item",
+     *     summary="BanOrUnBanUser",
+     *     description="Ban Or UnBan User",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
-     *         )
-     *     ),
-     *     @OA\RequestBody(
-     *         description="tasks input",
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="is_ban",
-     *                 type="boolean",
-     *                 description="is_ban",
-     *                 example=true
-     *             ),
      *         )
      *     ),
      *     @OA\Response(
@@ -151,17 +139,15 @@ class AdminUsersController extends Controller
      * )
      * Update the specified resource in storage.
      */
-    public function ban(int $id, Request $request)
+    public function ban(int $id)
     {
-        $request->validate([
-            'is_ban' => 'required|boolean'
-        ]);
         try {
             $user = User::findOrFail($id);
-            $user->is_ban = $request->is_ban;
+            $user->is_ban = !$user->is_ban;
             $user->save();
+            $message = $user->is_ban ? 'ban user successfully' : 'unban user successfully';
             return $this->success([
-                'message' => 'ban user successfully',
+                'message' => $message,
                 'user'    => $user
             ]);
         } catch (\Throwable $th) {

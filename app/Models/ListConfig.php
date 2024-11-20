@@ -30,4 +30,9 @@ class ListConfig extends Model
     {
         return $this->hasOne(CheckList::class);
     }
+
+    public function subConfig()
+    {
+        return $this->hasMany(subConfig::class);
+    }
 }

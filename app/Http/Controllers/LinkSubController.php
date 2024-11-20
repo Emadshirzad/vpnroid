@@ -175,7 +175,8 @@ class LinkSubController extends Controller implements HasMiddleware
             $link = LinkSub::create($dataValidated);
             return $this->success($link);
         } catch (Exception $th) {
-            return $this->error($th->getMessage());
+            Log::error($th->getMessage());
+            return $this->error('sub not created');
         }
     }
 

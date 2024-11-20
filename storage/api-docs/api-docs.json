@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Admin OpenApi",
-        "description": "this is a api documentation (you must be admin for use method PUT/DELETE)",
+        "description": "this is a api documentation ( you must be admin for use method PUT/DELETE )",
         "contact": {
             "name": "Emad shirzad",
             "email": "shemad2022@gmail.com"
@@ -137,8 +137,8 @@
                 "tags": [
                     "AdminUsers"
                 ],
-                "summary": "EditOneItem",
-                "description": "edit one Item",
+                "summary": "BanOrUnBanUser",
+                "description": "Ban Or UnBan User",
                 "operationId": "0c20ac5a833a15e8da5c0d42daa8f9db",
                 "parameters": [
                     {
@@ -150,24 +150,6 @@
                         }
                     }
                 ],
-                "requestBody": {
-                    "description": "tasks input",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "is_ban": {
-                                        "description": "is_ban",
-                                        "type": "boolean",
-                                        "example": true
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "200": {
                         "description": "Success Message",
@@ -576,6 +558,43 @@
                 "summary": "my info",
                 "description": "my info",
                 "operationId": "48f639b92fda544efac156d3a00cc179",
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserModel"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an 'unexpected' error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/auth/user/config": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "my config",
+                "description": "my info",
+                "operationId": "a8aba21e1d658ca7d1b179950b7238ed",
                 "responses": {
                     "200": {
                         "description": "Success Message",
@@ -1624,6 +1643,53 @@
                 "summary": "users envoy list",
                 "description": "envoy info",
                 "operationId": "b3304048de557bd57536d3dd10c0e0ac",
+                "responses": {
+                    "200": {
+                        "description": "Success Message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserModel"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "an 'unexpected' error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/auth/envoy/ban/{id}": {
+            "put": {
+                "tags": [
+                    "Envoy"
+                ],
+                "summary": "BanOrUnBanUser",
+                "description": "Ban Or UnBan User",
+                "operationId": "aab85217533bf4b7a97eee67cc05f553",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success Message",
@@ -2804,6 +2870,11 @@
                                         "description": "update_time",
                                         "type": "integer",
                                         "example": "10"
+                                    },
+                                    "expire_date": {
+                                        "description": "expire_date",
+                                        "type": "integer",
+                                        "example": "10"
                                     }
                                 },
                                 "type": "object"
@@ -2926,6 +2997,11 @@
                                     },
                                     "update_time": {
                                         "description": "update_time",
+                                        "type": "integer",
+                                        "example": "10"
+                                    },
+                                    "expire_date": {
+                                        "description": "expire_date",
                                         "type": "integer",
                                         "example": "10"
                                     }

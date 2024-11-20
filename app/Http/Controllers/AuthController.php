@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Envoy;
+use App\Models\ListConfig;
+use App\Models\subConfig;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -244,6 +246,49 @@ class AuthController extends Controller implements HasMiddleware
     public function me()
     {
         return $this->success(Auth::user());
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/auth/user/config",
+     *     tags={"Authentication"},
+     *     summary="my config",
+     *     description="my info",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/UserModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an 'unexpected' error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * Get the authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function config()
+    {
+        try {
+            $user = Auth::user()->userConfig;
+            if (!$user) {
+                return $this->error('config not purchased');
+            }
+            foreach ($user as $item) {
+                $item = $item->config->prepare_id;
+            }
+            $subs = subConfig::whereSubId($item)->get();
+            $subsConfig = [];
+            foreach ($subs as $sub) {
+                $subsConfig[] = $sub->config;
+            }
+            return $this->success($subsConfig);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return $this->error('Config not found');
+        }
     }
 
     /**

@@ -141,7 +141,7 @@ class ConfigController extends Controller
      * )
      * Display the specified resource.
      */
-    public function getConfigFromTel(Request $request)
+    public function getConfigFromTel()
     {
         try {
             $settings = new Settings();
@@ -223,7 +223,7 @@ class ConfigController extends Controller
      * )
      * Display the specified resource.
      */
-    public function setChannels(Request $request)
+    public function setChannels()
     {
         try {
             $settings = new Settings();

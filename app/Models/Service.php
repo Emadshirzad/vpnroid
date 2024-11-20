@@ -13,6 +13,7 @@ class Service extends Model
         'price',
         'type_id',
         'update_time',
+        'expire_date',
     ];
 
     public function type()

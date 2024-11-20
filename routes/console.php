@@ -11,9 +11,9 @@ Artisan::command('inspire', function () {
 
 // write schedule job get configs
 Schedule::call(function () {
-    return (new ConfigController())->getConfigFromTel(request());
+    return (new ConfigController())->getConfigFromTel();
 })->hourly();
 // write schedule job set channels
 Schedule::call(function () {
-    return (new ConfigController())->setChannels(request());
+    return (new ConfigController())->setChannels();
 })->hourly();

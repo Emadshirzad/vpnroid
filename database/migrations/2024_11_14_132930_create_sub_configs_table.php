@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Type;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,13 +10,10 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('sub_configs', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->integer('price');
-            $table->foreignIdFor(Type::class)->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->string('update_time');
-            $table->string('expire_date');
+            $table->foreignId('sub_id')->constrained('link_subs')->onDelete('cascade')->onUpdate('cascade');
+            $table->Text('config');
             $table->timestamps();
         });
     }
@@ -27,6 +23,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('services');
+        Schema::dropIfExists('sub_configs');
     }
 };

@@ -146,6 +146,12 @@ class ServiceController extends Controller
      *                 type="integer",
      *                 description="update_time",
      *                 example="10",
+     *             ),
+     *             @OA\Property(
+     *                 property="expire_date",
+     *                 type="integer",
+     *                 description="expire_date",
+     *                 example="10",
      *             )
      *         )
      *     ),
@@ -169,11 +175,13 @@ class ServiceController extends Controller
             'price'        => 'required|numeric',
             'type_id'      => 'required|numeric',
             'update_time'  => 'required|numeric',
+            'expire_date'  => 'required|numeric',
         ]);
         try {
             $service = Service::create($dataValidated);
             return $this->success($service);
         } catch (Exception $e) {
+            return $this->error('service not created');
             Log::error($e->getMessage());
         }
     }
@@ -257,6 +265,12 @@ class ServiceController extends Controller
      *                 description="update_time",
      *                 example="10",
      *             ),
+     *             @OA\Property(
+     *                 property="expire_date",
+     *                 type="integer",
+     *                 description="expire_date",
+     *                 example="10",
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -279,6 +293,7 @@ class ServiceController extends Controller
             'price'        => 'nullable|numeric',
             'type_id'      => 'nullable|numeric',
             'update_time'  => 'nullable|numeric',
+            'expire_date'  => 'nullable|numeric',
         ]);
         try {
             $service = Service::findOrFail($id);

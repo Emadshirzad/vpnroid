@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Channels;
 use App\Models\LinkSub;
 use App\Models\ListConfig;
+use App\Models\subConfig;
 use App\Models\Type;
 use App\Models\WebServiceGet;
 use App\Models\WebServicePost;
@@ -12,6 +13,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class ListConfigController extends Controller implements HasMiddleware
@@ -188,10 +190,48 @@ class ListConfigController extends Controller implements HasMiddleware
                     break;
                 case 'Link':
                     $resp = LinkSub::FindOrFail($request->prepare_id);
+                    $response = Http::withHeaders([
+                        'Accept'    => '*/*',
+                        'User-Agent'=> 'Thunder Client (https://www.thunderclient.com)',
+                    ])
+                    ->get($resp->link);
+                    //FIXME:: check this section
+                    $configs = $response->body();
+                    if ($resp->is_encode) {
+                        $configs = base64_decode($response->body());
+                    }
+                    $pattern = '/(v[l|m]ess|tcp|h[y]2|ss|trojan):\/\/[^\s]+/';
+                    preg_match_all($pattern, $configs, $matches);
+                    $urls = $matches[0];
+                    foreach ($urls as $config) {
+                        subConfig::create([
+                            'sub_id' => $resp->id,
+                            'config' => $config
+                        ]);
+                    }
                     $config = ListConfig::create(array_merge($dataValidated, ['config' => $resp->link]));
                     break;
                 case 'GET':
                     $resp = WebServiceGet::FindOrFail($request->prepare_id);
+                    $response = Http::withHeaders([
+                        'Accept'    => '*/*',
+                        'User-Agent'=> 'Thunder Client (https://www.thunderclient.com)',
+                    ])
+                    ->get($resp->link);
+                    //FIXME:: check this section
+                    $configs = $response->body();
+                    if ($resp->is_encode) {
+                        $configs = base64_decode($response->body());
+                    }
+                    $pattern = '/(v[l|m]ess|tcp|h[y]2|ss|trojan):\/\/[^\s]+/';
+                    preg_match_all($pattern, $configs, $matches);
+                    $urls = $matches[0];
+                    foreach ($urls as $config) {
+                        subConfig::create([
+                            'sub_id' => $resp->id,
+                            'config' => $config
+                        ]);
+                    }
                     $config = ListConfig::create(array_merge($dataValidated, ['config' => $resp->link]));
                     break;
                 case 'POST':
@@ -199,7 +239,7 @@ class ListConfigController extends Controller implements HasMiddleware
                     $config = ListConfig::create(array_merge($dataValidated, ['config' => $resp->link]));
                     break;
             }
-            return $this->success('success');
+            return $this->success($config);
         } catch (Exception $e) {
             Log::error($e->getMessage());
         }
